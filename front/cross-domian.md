@@ -30,7 +30,7 @@ master和slave都是有各自的域名，由于浏览器的安全限定，两个
 
 示意图如下：
 https://raw.githubusercontent.com/FreeLanderEden/cross-domain/master/example/principle.jpg
-![clipboard.png](/img/bVbcVw0)
+![clipboard.png](https://raw.githubusercontent.com/FreeLanderEden/cross-domain/master/example/principle.jpg)
 
 ## 提供的主要API ##
 
@@ -200,15 +200,14 @@ https://raw.githubusercontent.com/FreeLanderEden/cross-domain/master/example/pri
 ```
 - 交互效果
 
-![clipboard.png](/img/bVbcVDB)
+![clipboard.png](https://segmentfault.com/img/bVbcVDB)
 
 ## 应用案例 ##
 
 某企业作业系统
-![图片描述][4]
+![图片描述](https://segmentfault.com/img/bVbcVD4)
 
 
   [1]: https://github.com/FreeLanderEden/cross-domain
   [2]: https://my.oschina.net/toopoo/blog/204279
   [3]: https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage
-  [4]: /img/bVbcVD4

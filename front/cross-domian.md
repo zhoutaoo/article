@@ -38,24 +38,24 @@ https://raw.githubusercontent.com/FreeLanderEden/cross-domain/master/example/pri
 
 - 接口调用（向其它iframe发送数据）
 ```
-        /**
-		 * 发送消息方法
-		 * @param {String} componentName组件名称
-	     * @param {String} method接口名称（对方通过API extends提供的接口名）
-         * @param {Object} data数据
-	     * @param {Function} callback回调
-         */
-		 send : function(componentName,method,data,callback,type);
+    /**
+     * 发送消息方法
+     * @param {String} componentName组件名称
+     * @param {String} method接口名称（对方通过API extends提供的接口名）
+     * @param {Object} data数据
+     * @param {Function} callback回调
+     */
+     send : function(componentName,method,data,callback,type);
 ```
 - 提供接口（提供前端接口，可供其它iframe调用）
 
 ```
-       /**
-		* 扩展接口方法,供调用方send方法调用
-		* @param {String} name接口名称
-		* @param {Function} fun 接口方法
-		*/
-		extends : function(name,fun);
+   /**
+    * 扩展接口方法,供调用方send方法调用
+    * @param {String} name接口名称
+    * @param {Function} fun 接口方法
+    */
+    extends : function(name,fun);
 ```
 ##  例子 ##
 
@@ -65,49 +65,49 @@ https://raw.githubusercontent.com/FreeLanderEden/cross-domain/master/example/pri
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Test Page</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Test Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <!--引入js库-->
-	<script type="text/javascript" src="../src/cross-domain.js"></script>
+    <script type="text/javascript" src="../src/cross-domain.js"></script>
 </head>
 <body>
-	Test Page MASTER
-	<button onclick="sendMesg1()">send data to Slave1</button>
-	<button onclick="sendMesg2()">send data to Slave2</button>
-	<br/>
+    Test Page MASTER
+    <button onclick="sendMesg1()">send data to Slave1</button>
+    <button onclick="sendMesg2()">send data to Slave2</button>
+    <br/>
     <!--slave1-->
-	<iframe src="http://127.0.0.1/cross-domain/example/slave1.html" name="SLAVE1" id="SLAVE1"></iframe>
+    <iframe src="http://127.0.0.1/cross-domain/example/slave1.html" name="SLAVE1" id="SLAVE1"></iframe>
     <!--slave2-->
-	<iframe src="http://127.0.0.1/cross-domain/example/slave2.html" name="SLAVE2" id="SLAVE2"></iframe>
-	<div id="content"></div>
+    <iframe src="http://127.0.0.1/cross-domain/example/slave2.html" name="SLAVE2" id="SLAVE2"></iframe>
+    <div id="content"></div>
 </body>
 
 <script type="text/javascript">
-	var me = CD.component.name;
-	function genInfo(name){
-		return {info : "Hello [" + name + "] , I am [" + me + "] Now at " + new Date()};
-	}
+    var me = CD.component.name;
+    function genInfo(name){
+        return {info : "Hello [" + name + "] , I am [" + me + "] Now at " + new Date()};
+    }
     //调用SLAVE2的changeSlave1前端接口，接口参数为genInfo("SLAVE1")
-	function sendMesg1 (argument) {
-		CD.send("SLAVE1" , "changeSlave1" ,genInfo("SLAVE1") ,function(data){
-			console.log("callback fire");
-			writeHtml(data);
-		});
-	}
+    function sendMesg1 (argument) {
+        CD.send("SLAVE1" , "changeSlave1" ,genInfo("SLAVE1") ,function(data){
+            console.log("callback fire");
+            writeHtml(data);
+        });
+    }
     //调用SLAVE2的changeSlave2前端接口，接口参数为genInfo("SLAVE2")
-	function sendMesg2 (argument) {
-		CD.send("SLAVE2" , "changeSlave2" , genInfo("SLAVE2"));
-	}
+    function sendMesg2 (argument) {
+        CD.send("SLAVE2" , "changeSlave2" , genInfo("SLAVE2"));
+    }
     //MASTER提供接口，可供SLAVE1和SLAVE2调用
-	CD.extends("changeMaster" , function(data){
-		writeHtml(data.info);
-	});
+    CD.extends("changeMaster" , function(data){
+        writeHtml(data.info);
+    });
     //当SLAVE1和SLAVE2调用changeMaster接口时，会打印在MASTER的页面中
-	function writeHtml(text){
-		var content = document.getElementById("content");
-		content.innerHTML += "<br/>" + text;
-	}
-	console.log(CD);
+    function writeHtml(text){
+        var content = document.getElementById("content");
+        content.innerHTML += "<br/>" + text;
+    }
+    console.log(CD);
 </script>
 </html>
 ```
@@ -120,37 +120,37 @@ https://raw.githubusercontent.com/FreeLanderEden/cross-domain/master/example/pri
 <!DOCTYPE html>
 <html>
 <head>
-	<title>slave1</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="../src/cross-domain.js"></script>
+    <title>slave1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="../src/cross-domain.js"></script>
 </head>
 <body>
-	<div id="main">
-		I am salve1 frame
-		<button onclick="sendMesg()">send data</button>
-	</div>
-	<div id="content"></div>
+    <div id="main">
+        I am salve1 frame
+        <button onclick="sendMesg()">send data</button>
+    </div>
+    <div id="content"></div>
 </body>
 <script type="text/javascript">
-	var me = CD.component.name;
-	function genInfo(name){
-		return {info : "Hello [" + name + "] , I am [" + me + "] Now at " + new Date()};
-	}
+    var me = CD.component.name;
+    function genInfo(name){
+        return {info : "Hello [" + name + "] , I am [" + me + "] Now at " + new Date()};
+    }
     //调用MASTER的changeMaster接口，数据为genInfo("MESTER")
-	function sendMesg (argument) {
-		CD.send("MESTER" , "changeMaster" ,genInfo("MESTER"));
-	}
+    function sendMesg (argument) {
+        CD.send("MESTER" , "changeMaster" ,genInfo("MESTER"));
+    }
 
     //提供前端接口changeSlave1，可供MASTER和其它SLAVE调用
-	CD.extends("changeSlave1" , function(data){
-		writeHtml(data.info);
-		return "Slave1 changeSlave1 is called";
-	});
-	function writeHtml(text){
-		var content = document.getElementById("content");
-		content.innerHTML += "<br/>" + text;
-	}
-	console.log(CD);
+    CD.extends("changeSlave1" , function(data){
+        writeHtml(data.info);
+        return "Slave1 changeSlave1 is called";
+    });
+    function writeHtml(text){
+        var content = document.getElementById("content");
+        content.innerHTML += "<br/>" + text;
+    }
+    console.log(CD);
 </script>
 
 </html>
@@ -164,37 +164,37 @@ https://raw.githubusercontent.com/FreeLanderEden/cross-domain/master/example/pri
 <!DOCTYPE html>
 <html>
 <head>
-	<title>slave2</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="../src/cross-domain.js"></script>
+    <title>slave2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="../src/cross-domain.js"></script>
 </head>
 <body>
-	<div id="main">
-		I am slave2 frame
-		<button onclick="sendMesg()">send data</button>
-	</div>
-	<div id="content"></div>
+    <div id="main">
+        I am slave2 frame
+        <button onclick="sendMesg()">send data</button>
+    </div>
+    <div id="content"></div>
 
 </body>
 <script type="text/javascript">
-	var me = CD.component.name;
-	function genInfo(name){
-		return {info : "Hello [" + name + "] , I am [" + me + "] Now at " + new Date()};
-	}
+    var me = CD.component.name;
+    function genInfo(name){
+        return {info : "Hello [" + name + "] , I am [" + me + "] Now at " + new Date()};
+    }
     //调用MASTER的changeMaster接口，数据为genInfo("MESTER")
-	function sendMesg (argument) {
-		CD.send("MESTER" , "changeMaster" ,genInfo("MESTER"));
-	}
+    function sendMesg (argument) {
+        CD.send("MESTER" , "changeMaster" ,genInfo("MESTER"));
+    }
 
     //提供前端接口changeSlave2，可供MASTER和其它SLAVE调用
-	CD.extends("changeSlave2" , function(data){
-		writeHtml(data.info);
-	});
-	function writeHtml(text){
-		var content = document.getElementById("content");
-		content.innerHTML += "<br/>" + text;
-	}
-	console.log(CD);
+    CD.extends("changeSlave2" , function(data){
+        writeHtml(data.info);
+    });
+    function writeHtml(text){
+        var content = document.getElementById("content");
+        content.innerHTML += "<br/>" + text;
+    }
+    console.log(CD);
 </script>
 </html>
 ```

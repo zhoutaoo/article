@@ -114,8 +114,6 @@ Dubbo是阿里巴巴公司开源的一个高性能优秀的服务框架，使得
 [官网](http://dubbo.apache.org/#!/?lang=zh-cn)
 
 
-### 
-
 ## 下一代微服务Services Mesh(网格服务)
 
 Service Mesh 架构图：

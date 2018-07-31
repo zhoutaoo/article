@@ -86,7 +86,11 @@ spring-cloud-contract
 
 ### Why？
 
+微服务架构中，应用被拆分众多的小应用服务，应该规模变大，服务实例的数量是动态变化，为了为客户端能够访问到服务，就必须要有一种服务的发现机制，完成服务的登记注册、监控管理、服务发现，服务间的调用管理等功能。
+
 ### What？
+
+有两种主要的服务发现方式：客户端发现（client-side discovery）和服务器端发现（server-side discovery）。Eureka是客户端发现模式。
 
 Spring Cloud Eureka由两个组件组成：Eureka服务器和Eureka客户端。
 
@@ -106,7 +110,7 @@ Eureka Client连接到Eureka Server，并维持心跳连接。这样系统的维
 
 ### What？
 
-Spring Cloud Config由两个组件组成：Config服务器和Config客户端。应用启动时，将相关配置项拉取到本地缓存使用，配置更新时也可由配置中心主动推送到应用节点(后续会详细讲解）。
+Spring Cloud Config由两个组件组成：Config服务器和Config客户端。应用启动时，将相关配置项拉取到本地缓存使用，配置更新时也可由配置中心主动推送到应用节点(后续会详细讲解）。他支持git、svn、file方式存储配置。
 
 ![config](sc-config.PNG)
 
@@ -178,7 +182,19 @@ Spring Cloud Hystrix微服务架构中提供服务隔离、熔断、降级机制
 
 ### Why？
 
+在 Web 应用开发中，安全一直是非常重要的一个方面。安全虽然属于应用的非功能性需求，但是应该在应用开发的初期就考虑进来。如果在应用开发的后期才考虑安全的问题，就可能陷入一个两难的境地：一方面，应用存在严重的安全漏洞，无法满足用户的要求，并可能造成用户的隐私数据被攻击者窃取；另一方面，应用的基本架构已经确定，要修复安全漏洞，可能需要对系统的架构做出比较重大的调整，因而需要更多的开发时间，影响应用的发布进程。因此，从应用开发的第一天就应该把安全相关的因素考虑进来，并在整个应用的开发过程中。
+
 ### What？
 
-Spring Cloud Security
+Spring Cloud Security是基于Spring的企业应用系统提供声明式的安全访问控制解决方案的安全框架。它提供全面的安全性解决方案，同时在Web请求级和方法调用级处理身份确认和授权。他是灵活和强大的身份验证和访问控制框架，以确保基于Spring的Java Web应用程序的安全。
+
+>OAuth2.0授权框架使第三方应用程序来获取对HTTP服务的有限访问机会。无论是通过编排资源所有者和HTTP服务之间的交互批准的资源所有者，或通过允许第三方应用程序来获取自己的访问权限。
+
+例如某网站/app以微信、qq登陆方式就是OAuth2方式。
+
+Spring Security Oauth2是建立在spring security的基础之上，符合OAuth2标准的开源实现。
+
+OAuth2定义了4种模式，共有4个角色，具体内容可以查看另外的介绍 
+
+[Spring Security OAuth2简介与实施](https://gitee.com/toopoo/SpringCloud/blob/master/auth/readme.md)
 

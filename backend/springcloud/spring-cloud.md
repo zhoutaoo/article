@@ -3,7 +3,7 @@ SpringCloud打造微服务平台--概览
 
 # 简述
 
-## ScpringCloud是什么
+## SpringCloud是什么
 
 ### Spring Boot和SpringCloud是什么关系
 
@@ -63,7 +63,7 @@ spring-cloud-bus
 
 * 链路跟踪：
 
-spring-cloud-sletuh --> zipkin server
+spring-cloud-sleuth --> zipkin server
 
 * 任务调度：
 
@@ -86,7 +86,7 @@ spring-cloud-contract
 
 ### Why？
 
-微服务架构中，应用被拆分众多的小应用服务，应该规模变大，服务实例的数量是动态变化，为了为客户端能够访问到服务，就必须要有一种服务的发现机制，完成服务的登记注册、监控管理、服务发现，服务间的调用管理等功能。
+微服务架构中，应用被拆分众多的小应用服务，应该规模变大，服务实例的数量是动态变化，为了让客户端能够访问到服务，就必须要有一种服务的发现机制，完成服务的登记注册、监控管理、服务发现，服务间的调用管理等功能。
 
 ### What？
 

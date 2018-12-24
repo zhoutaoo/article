@@ -154,7 +154,7 @@ Spring Cloud Feign是一个声明式的Web Service客户端，它的目的就是
 
 Feign整合了Ribbon和Hystrix（见下节），可以让我们不再需要显式地使用这两个组件，大大简化了服务调用。
 
-![gateway](sc-ribbon.png)
+![gateway](sc-ribbon.PNG)
 
 ## 服务容错
 

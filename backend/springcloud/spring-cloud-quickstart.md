@@ -46,7 +46,7 @@ Spring Cloud Ribbon
 
 ![gateway](sc-call.png)
 
-![gateway](sc-ribbon.png)
+![gateway](sc-ribbon.PNG)
 
 ## 服务容错
 

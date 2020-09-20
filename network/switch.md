@@ -44,13 +44,13 @@ Enter system view, return user view with Ctrl+Z.
 | undo        |      | 撤消或反向操作对应命令 |
 | system-view | sy   | 进入系统视图           |
 | sysname     |      | 设置交换机名称         |
-| quit        |      | 退出当前视图           |
+| quit        | q    | 退出当前视图           |
 | reboot      |      | 交换机重启             |
 | reset       |      |                        |
 | restart     |      | 重新启动当前接口       |
 | shutdown    |      | 关闭当前接口           |
 
-### 常用操作
+### 信息查看命令
 
 #### 交换机信息查看
 
@@ -59,7 +59,7 @@ display version  查看交换机软件版本
 display clock    查看交换机时钟
 ```
 
-#### 配置查看
+#### 交换机配置查看
 
 ```
 display saved-configuration    显示系统保存配置
@@ -69,6 +69,7 @@ display current-configuration  显示系统当前配置
 #### 当前对象信息查看
 
 ```
+display this                    显示当前信息。
 display this include-default    显示当前接口视图下的接口信息，包括默认值。
 display this interface          显示当前接口视图下的接口信息。
 ```
@@ -88,15 +89,20 @@ display interface vlanif        查看VLANIF接口的状态信息、配置信息
 display ip interface             查看接口与IP相关的配置和统计信息，包括接口接收和发送的报文数、字节数和组播报文数，以及接口接收、发送、转发和丢弃的广播报文数。
 display ip interface brief       看接口与IP相关的简要信息，包括IP地址、子网掩码、物理链路和协议的Up/Down状态以及处于不同状态的接口数目。
 display ip interface description 查看接口与IP相关的简要信息，包括IP地址、子网掩码、物理层状态、链路层协议状态，及接口描述信息和处于不同状态的接口数目。
-```
-
-```
-display ip routing-table  显示路由信息
 display ip pool                                                          显示所有ip pool
 display ip pool name {pool name} {all|conflict|expired|used}             显示ip pool详细信息
 display ip host                查看静态DNS表项
 display ip socket              查看已创建的IPv4 Socket信息。
 display ip statistics          显示IP流量统计信息。
+```
+
+#### 查看路由
+
+```
+display ip routing-table        显示路由信息
+display ospf peer               查看ospf邻接等信息
+display ospf peer brief         查看ospf邻接等简要信息
+display rip                     查看rip路由信息
 ```
 
 #### 网络及流量
@@ -119,6 +125,24 @@ display mac-vlan mac-address all          查看所有MAC地址划分VLAN的配�
 display mac-vlan vlan 2                   查看vlan 2 MAC地址划分VLAN的配置信息
 ```
 
+#### 查看ACL配置
+
+```
+display acl {all | name | ipv6}                         查看ACL
+display traffic-filter applied-record                   查看acl应用的接口
+```
+
+#### 查看NAT配置
+
+```
+#路由器命令
+display nat static {acl | global | inside | interface}         查看静态NAT信息
+display nat session {all | dest | number | protocol | source}  查看动态NAT信息
+display nat server {acl | global | inside | interface}         查看NAT server信息
+```
+
+### 配置管理命令
+
 #### 端口管理
 
 ```
@@ -127,6 +151,7 @@ port description                                   配置接口的描述信息�
 port gigabitethernet 0/0/1 to 0/0/4
 port default vlan                                  配置接口的缺省VLAN并同时加入这个VLAN。
 port link-type {access | hybird | trunk}           配置接口的链路类型
+port trunk allow-pass vlan {vlanid}                将trunk接口加入vlan
 ```
 
 #### 端口配置
@@ -173,6 +198,37 @@ dns domain domain-name    命令用来配置域名后缀，如 dns domain com.cn
 dns resolve               命令用来使能动态域名解析功能
 dns server {ip}           命令用来配置DNS服务器的IP地址
 ip host {domain} {ip}     命令用来配置静态DNS表项 ip host www.huawei.com 10.10.10.4。
+```
+
+#### DHCP管理
+
+```
+dhcp enable                          命令用来开启DHCP功能。 
+dhcp select global                   从全局配置中获取dhcp配置
+```
+
+#### ACL管理
+
+```
+acl {name | number | ipv6}                     创建acl
+rule [{ruleid}] permit source {源ip} {反掩码}   创建允许规则
+rule [{ruleid}] deny source {源ip} {反掩码}     创建拒绝规则
+
+traffic-filter {inbound | outbound} acl {acl number}              在接口上应用acl规则
+```
+
+#### NAT管理
+
+```shell
+#边界路由器接口上配置静态NAT
+nat static global {外部ip} inside {内部ip}                 添加静态nat，内外部ip一对一
+#动态NAT，使用dis nat session查看
+nat address-group {groupid} {ip开始} {ip结束}                     添加外部可用地址池
+nat outbound {acl id} address-group {address-group id} no-pat    添加动态地址转换
+#NAPT，使用dis nat session查看
+nat outbound {acl id} [address-group {address-group id}]         添加动态端口地址转换
+#NAT server，使用dis nat server查看
+nat server protocol tcp global {外部ip} {外部端口} inside {内部ip} {内部端口}   添加nat server转换
 ```
 
 #### 用户管理
@@ -226,10 +282,7 @@ display voice-vlan oui                          查看Voice VLAN的OUI及其相�
 display voice-vlan status                       查看当前Voice VLAN的相关信息
 
 mac-vlan mac-address
-dhcp enable                          命令用来开启DHCP功能。 
 ```
-
-
 
 ### 操作实战
 
@@ -246,11 +299,16 @@ dhcp enable                          命令用来开启DHCP功能。
 [Huawei] interface vlan 2
 #设置vlan2的三层网关路由
 [Huawei-Vlanif2] ip address 10.0.0.1 255.255.255.0
-#进入0/0/1接口，将该接口加入vlan2中
+#进入0/0/1接口，配置为access接口并加入vlan2中
 [Huawei] interface GigabitEthernet 0/0/1
 [Huawei-GigabitEthernet0/0/1] port link-type access
 [Huawei-GigabitEthernet0/0/1] port default vlan 2
-[Huawei-GigabitEthernet0/0/1] dis this
+#进入0/0/2接口，配置为trunk接口并加入vlan2中
+[Huawei] interface GigabitEthernet 0/0/2
+[Huawei-GigabitEthernet0/0/2] port link-type trunk
+[Huawei-GigabitEthernet0/0/2] port trunk allow-pass vlan 2
+#查看端口配置的信息
+[Huawei-GigabitEthernet0/0/2] dis this
 #进入vlan2，将0/0/2到0/0/5端口加入到vlan2中（port link-type需要是access类型）
 [Huawei] vlan 2
 [Huawei-vlan2] port GigabitEthernet 0/0/2 to 0/0/5 
@@ -301,7 +359,7 @@ dhcp enable                          命令用来开启DHCP功能。
 [Huawei-Vlanif2] dhcp select global
 ```
 
-#### 添加路由
+#### 静态添加路由
 
 ```shell
 <Huawei> system-view
@@ -310,6 +368,40 @@ dhcp enable                          命令用来开启DHCP功能。
 [Huawei] ip route-static 10.0.1.0 255.255.255.0 10.0.0.1
 #删除路由
 [Huawei] undo ip route-static 10.0.1.0 255.255.255.0 10.0.0.1
+```
+
+#### RIP路由管理 
+
+```shell
+<Huawei> system-view
+#修改loopback0地址
+[Huawei] int LoopBack 0
+[Huawei-LoopBack0] ip address 1.1.1.1 0
+#创建rip进程
+[Huawei] rip 1
+#启动版本2
+[Huawei-rip-1] version 2
+#宣告网段
+[Huawei] network 10.0.0.0
+[Huawei] network 1.0.0.0
+```
+
+#### OSPF路由管理
+
+```shell
+<Huawei> system-view
+#创建ospf
+[Huawei] ospf 1 router-id 1.1.1.1
+#创建area0区域
+[Huawei-ospf-1] area 0
+#加入192.168.0.0/24子网
+[Huawei-ospf-1-area-0.0.0.0] network 192.168.0.0 0.0.0.255
+[Huawei-ospf-1-area-0.0.0.0]dis this
+#
+ area 0.0.0.0
+  network 192.168.0.0 0.0.0.255
+#
+[Huawei-ospf-1-area-0.0.0.0]
 ```
 
 #### 用户管理 
@@ -327,6 +419,3 @@ dhcp enable                          命令用来开启DHCP功能。
 #配置用户特权等级15
 [Huawei-aaa] local-user user1 privilege level 15
 ```
-
-
-

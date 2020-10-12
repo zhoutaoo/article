@@ -129,6 +129,14 @@ display mac-vlan vlan 2                   查看vlan 2 MAC地址划分VLAN的配
 
 ```
 display acl {all | name | ipv6}                         查看ACL
+display traffic classifier user-defined                 查看用户定义的流分类
+display traffic behavior user-defined                   查看用户定义的流行为
+display traffic policy user-defined {policy name}       查看用户定义的流策略
+display traffic-applied {inbound | outbound | interface | vlan}  查看流策略应用情况
+
+display traffic policy {global | interface | statistics | vlan } {inbound | outbound}   查看更多流策略信息
+display traffic policy statistics {global | interface | vlan} {inbound | outbound}      查看流策略统计信息
+
 display traffic-filter applied-record                   查看acl应用的接口
 ```
 
@@ -211,10 +219,23 @@ dhcp select global                   从全局配置中获取dhcp配置
 
 ```
 acl {name | number | ipv6}                     创建acl
-rule [{ruleid}] permit source {源ip} {反掩码}   创建允许规则
-rule [{ruleid}] deny source {源ip} {反掩码}     创建拒绝规则
+rule [{ruleid}] permit ip source {源ip} {反掩码} [ destination {源ip} {反掩码} ]  创建允许规则
+rule [{ruleid}] deny ip source {源ip} {反掩码} [ destination {源ip} {反掩码}  ]   创建拒绝规则
 
 traffic-filter {inbound | outbound} acl {acl number}              在接口上应用acl规则
+
+#创建流分类
+traffic classifier {classifier name} operator { and |or }
+if-match acl {acl number}                     为流分类设置匹配规则
+#创建流行为
+traffic behavior {behavior name}                      
+permit | deny | redirect                      为流行为配置动作
+#创建流策略
+traffic policy {policy name}        
+classifier {classifier name} behavior {behavior name}             关联流分类与流行为
+#将流策略应用到接口
+interface g0/0/1
+traffic-policy {policy name}  {inbound | outbound}                 接口绑定流策略
 ```
 
 #### NAT管理
@@ -277,7 +298,6 @@ display stp                   显示生成树信息
 display mac-address           显示MAC地址表
 display bridge mac-address    查看当前桥接设备mac地址
 display arp                   显示ARP信息表
-display acl all               查看所有acl规则
 display voice-vlan oui                          查看Voice VLAN的OUI及其相关属性。
 display voice-vlan status                       查看当前Voice VLAN的相关信息
 
@@ -402,6 +422,33 @@ mac-vlan mac-address
   network 192.168.0.0 0.0.0.255
 #
 [Huawei-ospf-1-area-0.0.0.0]
+```
+
+#### ACL管理
+
+```shell
+<Huawei> system-view
+#配置acl
+[Huawei] acl 3000
+[Huawei-acl-adv-3000] rule permit ip source 192.168.1.0 0.0.0.255 destination 192.168.2.0 0.0.0.255
+[Huawei-acl-adv-3000] rule permit ip source 192.168.2.0 0.0.0.255
+[Huawei-acl-adv-3000] quit
+#配置流分类，匹配acl
+[Huawei] traffic classifier c0 operator or 
+[Huawei-classifier-c0] if-match acl 3000
+[Huawei-classifier-c0] quit
+#配置流行为,设置动作
+[Huawei-behavior-b0] traffic behavior b0
+[Huawei-behavior-b0] permit
+[Huawei-behavior-b0] quit
+#配置流策略，关联流分类c0与流行为b0
+[Huawei] traffic policy p0
+[Huawei-trafficpolicy-p1] classifier c0 behavior b0
+[Huawei-trafficpolicy-p1] quit
+#配置流策略应用到接口
+[Huawei] interface  g0/0/1
+[Huawei-GigabitEthernet0/0/1] traffic-policy p0 inbound
+[Huawei-GigabitEthernet0/0/1] return
 ```
 
 #### 用户管理 
